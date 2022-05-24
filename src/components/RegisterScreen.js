@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThreeDots } from  'react-loader-spinner'
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import styled from "styled-components";
 import Logo from '../assets/images/logo.png'
@@ -15,7 +15,7 @@ export default function LoginScreen(){
         email: '',
         password: '',
         image: '',
-      });
+    });
 
     const navigate = useNavigate();
 
@@ -30,17 +30,11 @@ export default function LoginScreen(){
             password: form.password,
           };
 
-          console.log(form.email)
-          console.log(form.password)
-          console.log(form.name)
-          console.log(form.image)
-          console.log(body)
         const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", body);
           
         promise.then((response) => {
-            const {data} = response;
+            alert("Cadastrado com sucesso!")
             navigate("/");
-            console.log(data);
         });
         
         promise.catch(err => {
@@ -58,6 +52,7 @@ export default function LoginScreen(){
       }
 
     function RegisterForm() {
+
         return (
           <>
             <input type="email" id="email" name="email" value={form.email} placeholder="email" required onChange={handleForm}/>

@@ -1,7 +1,9 @@
 import React from 'react';
 import { ThreeDots } from  'react-loader-spinner'
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useContext } from "react";
+import UserContext from "../context/UserContext";
 import axios from 'axios';
 import styled from "styled-components";
 import Logo from '../assets/images/logo.png'
@@ -13,6 +15,8 @@ export default function LoginScreen(){
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const { user, setUser } = useContext(UserContext);
 
     const navigate = useNavigate();
 
@@ -30,8 +34,15 @@ export default function LoginScreen(){
         promise.then((response) => {
             const {data} = response;
             setToken(data.token);
+            setUser(
+                {
+                    id: data.id,
+                    name: data.name,
+                    image: data.image,
+                    email: data.email,
+                },
+            );
             navigate("/hoje", {state: {token}});
-            console.log(data)
         });
         
         promise.catch(err => {
