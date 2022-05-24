@@ -44,7 +44,7 @@ export default function LoginScreen(){
     function LoginForm() {
         return (
           <>
-            <input type="text" id="email" value={email} placeholder="email" required
+            <input type="email" id="email" value={email} placeholder="email" required
                 onChange={e => setEmail(e.target.value)}
             />
             <input type="password" id="password" value={password} placeholder="password" required
