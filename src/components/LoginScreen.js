@@ -10,13 +10,13 @@ import Logo from '../assets/images/logo.png'
 
 export default function LoginScreen(){
 
-    const [token, setToken] = useState("");
+    // const [token, setToken] = useState("");
     const [enable, setEnable] = useState(true);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const { user, setUser } = useContext(UserContext);
+    const { setUser } = useContext(UserContext);
 
     const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ export default function LoginScreen(){
     
         promise.then((response) => {
             const {data} = response;
-            setToken(data.token);
+            // setToken(data.token);
             setUser(
                 {
                     id: data.id,
@@ -42,7 +42,7 @@ export default function LoginScreen(){
                     email: data.email,
                 },
             );
-            navigate("/hoje", {state: {token}});
+            navigate("/hoje");
         });
         
         promise.catch(err => {

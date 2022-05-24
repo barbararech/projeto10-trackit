@@ -3,13 +3,11 @@ import NameContext from "../context/UserContext";
 import { useState } from 'react';
 import '../assets/styles/reset.css'
 
-// import Header from "./Header";
-// import Footer from "./Footer";
 import LoginScreen from "./LoginScreen";
 import RegisterScreen from "./RegisterScreen";
 import HabitsScreen from "./HabitsScreen";
 import TodayScreen from "./TodayScreen";
-// import HistoryScreen from "./HistoryScreen";
+import HistoryScreen from "./HistoryScreen";
 
 
 export default function App() {
@@ -23,7 +21,7 @@ export default function App() {
                 <Route path="/cadastro" element={<RegisterScreen />} />
                 <Route path="/habitos" element={<HabitsScreen />} />
                 <Route path="/hoje" element={<TodayScreen />} />  
-                {/* <Route path="/historico" element={<HistoryScreen />} />   */}
+                <Route path="/historico" element={<HistoryScreen />} />  
             </Routes>
         </BrowserRouter>
         </NameContext.Provider>
