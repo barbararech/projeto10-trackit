@@ -1,80 +1,79 @@
 import React from 'react';
-import { ThreeDots } from  'react-loader-spinner'
+import { ThreeDots } from 'react-loader-spinner'
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import axios from 'axios';
 import styled from "styled-components";
 import Logo from '../assets/images/logo.png'
 
-export default function LoginScreen(){
+export default function LoginScreen() {
 
-    const [enable, setEnable] = useState(true);
+  const [enable, setEnable] = useState(true);
 
-    const [form, setForm] = useState({
-        name: '',
-        email: '',
-        password: '',
-        image: '',
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    image: '',
+  });
+
+  const navigate = useNavigate();
+
+  function Register(event) {
+    event.preventDefault();
+    setEnable(false);
+
+    const body = {
+      email: form.email,
+      name: form.name,
+      image: form.image,
+      password: form.password,
+    };
+
+    const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", body);
+
+    promise.then((response) => {
+      alert("Cadastrado com sucesso!")
+      navigate("/");
     });
 
-    const navigate = useNavigate();
+    promise.catch(err => {
+      const message = err.response.statusText;
+      alert(message);
+      setEnable(true);
+    })
+  }
 
-    function Register(event){
-        event.preventDefault(); 
-        setEnable(false);
+  function handleForm(e) {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    })
+  }
 
-        const body = {
-            email: form.email,
-            name: form.name,
-            image: form.image,
-            password: form.password,
-          };
+  function RegisterForm() {
+    return (
+      <>
+        <input type="email" id="email" name="email" value={form.email} placeholder="email" required onChange={handleForm} />
+        <input type="password" id="password" name="password" value={form.password} placeholder="password" required onChange={handleForm} />
+        <input type="text" id="name" name="name" value={form.name} placeholder="name" required onChange={handleForm} />
+        <input type="url" id="image" name="image" value={form.image} placeholder="image" required onChange={handleForm} />
 
-        const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", body);
-          
-        promise.then((response) => {
-            alert("Cadastrado com sucesso!")
-            navigate("/");
-        });
-        
-        promise.catch(err => {
-            const message = err.response.statusText;
-            alert(message);
-            setEnable(true);
-        })
-    }
-
-    function handleForm (e) {
-        setForm({
-          ...form,
-          [e.target.name]: e.target.value,
-        }) 
-      }
-
-    function RegisterForm() {
-
-        return (
-          <>
-            <input type="email" id="email" name="email" value={form.email} placeholder="email" required onChange={handleForm}/>
-            <input type="password" id="password" name="password" value={form.password} placeholder="password" required onChange={handleForm}/>
-            <input type="text" id="name" name="name" value={form.name} placeholder="name" required onChange={handleForm}/>
-            <input type="url" id="image"  name="image" value={form.image} placeholder="image" required onChange={handleForm}/>
-
-            {enable ? <button type="submit">Cadastrar</button> : <button type="submit"><ThreeDots width={303} height={15}  color={"#FFFFFF"}/></button>
-            }
-          </>
-        )
-      }
-
-    return(
-        <Container>
-            <img src={Logo} alt="logo" />
-            <LoginForms enable={enable} onSubmit={Register}>
-                {RegisterForm()}
-            </LoginForms>
-            <Link to="/">Já tem uma conta? Faça login!</Link>
-        </Container>
+        {enable ? <button type="submit">Cadastrar</button> : <button type="submit"><ThreeDots width={303} height={15} color={"#FFFFFF"} /></button>
+        }
+      </>
     )
+  }
+
+  return (
+    <Container>
+      <img src={Logo} alt="logo" />
+      <LoginForms enable={enable} onSubmit={Register}>
+        {RegisterForm()}
+      </LoginForms>
+      <Link to="/">Já tem uma conta? Faça login!</Link>
+    </Container>
+  )
 }
 
 const Container = styled.div`
@@ -140,5 +139,6 @@ const LoginForms = styled.form`
     font-size:20px;
     font-family: 'Lexend Deca', sans-serif;
     pointer-events: ${props => props.enable ? 'auto' : 'none'};
+    opacity: ${props => props.enable ? '1' : '0.7'};
   };
 `

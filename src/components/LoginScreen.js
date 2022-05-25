@@ -1,16 +1,14 @@
 import React from 'react';
-import { ThreeDots } from  'react-loader-spinner'
+import { ThreeDots } from  'react-loader-spinner';
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { useContext } from "react";
 import UserContext from "../context/UserContext";
 import axios from 'axios';
 import styled from "styled-components";
-import Logo from '../assets/images/logo.png'
+import Logo from '../assets/images/logo.png';
 
 export default function LoginScreen(){
-
-    // const [token, setToken] = useState("");
     const [enable, setEnable] = useState(true);
 
     const [email, setEmail] = useState("");
@@ -33,13 +31,13 @@ export default function LoginScreen(){
     
         promise.then((response) => {
             const {data} = response;
-            // setToken(data.token);
             setUser(
                 {
                     id: data.id,
                     name: data.name,
                     image: data.image,
                     email: data.email,
+                    token: data.token,
                 },
             );
             navigate("/hoje");
@@ -141,5 +139,6 @@ const LoginForms = styled.form`
     font-size:20px;
     font-family: 'Lexend Deca', sans-serif;
     pointer-events: ${props => props.enable ? 'auto' : 'none'};
+    opacity: ${props => props.enable ? '1' : '0.7'};
   };
 `
