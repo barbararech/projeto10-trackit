@@ -80,12 +80,12 @@ export default function HabitsScreen() {
         const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
 
         promise.then((response) => {
-            // const { data } = response;
+            const { data } = response;
             setName("");
             setDays([]);
             setClicked(false);
             setEnable(true);
-            GetListHabits();
+            setMyHabits([...myHabits, data])
         });
 
         promise.catch(err => {
@@ -168,12 +168,19 @@ const Container = styled.div`
     padding: 0 18px;
     margin-bottom: 75px; 
 
+
+    :-moz-last-node{
+        padding-bottom:20px;
+    }
+
     span{
         font-family: 'Lexend Deca', sans-serif;
         font-size: 18px;
         color: #666666;
         line-height: 22px;
     }
+
+
 `
 const MyHabitsTop = styled.div`
     display: flex;
@@ -235,9 +242,7 @@ const HabitContainer = styled.form`
         color: ${props => props.enable ? '#DBDBDB' : '#AFAFAF'};
         opacity: 1;
 };
-
 `
-
 const Grid = styled.div`
     display: flex;
     flex-direction: row;
