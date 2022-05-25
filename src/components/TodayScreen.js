@@ -19,5 +19,5 @@ export default function TodayScreen(){
 
 const Container = styled.div`
     background-color: #f2f2f2; 
-    height: 100vh;
+    min-height: 100vh;
 `

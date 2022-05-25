@@ -85,6 +85,7 @@ export default function HabitsScreen() {
             setDays([]);
             setClicked(false);
             setEnable(true);
+            GetListHabits();
         });
 
         promise.catch(err => {
@@ -95,14 +96,14 @@ export default function HabitsScreen() {
     }
     console.log(myHabits)
 
-    function ListHabits() {
-        useEffect(()=>{
+    function GetListHabits() {
+        useEffect(() => {
             const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
 
             promise.then((response) => {
                 const { data } = response;
                 setMyHabits(data);
-                console.log(data)
+                console.log(data);
             });
 
             promise.catch(err => {
@@ -111,21 +112,22 @@ export default function HabitsScreen() {
             });
         }, []);
 
+    }
+
+    function MountListHabits() {
         const [active, setActive] = useState([]);
-      
-        if (myHabits.length > 0) {
-            console.log(myHabits)
-            // myHabits.map(function(item,index){
-                // console.log(name);
-                return (
+
+        const habits = myHabits.map((item, index) => {
+            return (
+                <>
                     <HabitContainer>
                         <HabitHeader>
-                            <span>Ler 1 capítulo</span>
+                            <span>{item.name}</span>
                             <ion-icon name="trash-outline"></ion-icon>
                         </HabitHeader>
                         <Grid active={active}>
                             <button type="button">D</button>
-                            <button type="button" >S</button>
+                            <button type="button">S</button>
                             <button type="button">T</button>
                             <button type="button">Q</button>
                             <button type="button">Q</button>
@@ -133,8 +135,14 @@ export default function HabitsScreen() {
                             <button type="button">S</button>
                         </Grid>
                     </HabitContainer>
-                );
-                // });
+                </>
+            );
+        });
+
+        if (myHabits.length > 0) {
+            return (
+                habits
+            )
         } else {
             return (
                 <span>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</span>
@@ -144,19 +152,21 @@ export default function HabitsScreen() {
 
 
     return (
-        <Container>
-            <Header />
-            {MountHabitsTop()}
-            {ListHabits()}
-            <Menu />
-        </Container>
+            <Container>
+                <Header />
+                {MountHabitsTop()}
+                {GetListHabits()}
+                {MountListHabits()}
+                <Menu />
+            </Container>
     )
 }
 
 const Container = styled.div`
     background-color: #f2f2f2; 
-    height: 100vh;
+    min-height: 100vh;
     padding: 0 18px;
+    margin-bottom: 75px; 
 
     span{
         font-family: 'Lexend Deca', sans-serif;
