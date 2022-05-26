@@ -25,13 +25,6 @@ export default function HabitsScreen() {
             "Authorization": `Bearer ${token}`
         }
     }
-    
-    const myHabitsDays = myHabits.map((e)=> e.days);
-    const buttonsWeekday = weekdays.map((weekday, index) => {
-        return (
-            <ButtonWeekday type="button" enable={enable} key={index} id={index} days={days} myHabits={myHabitsDays} onClick={() => SetWeekdays(index)}>{weekday.day}</ButtonWeekday >
-        );
-    });
 
     function MountHabitsTop() {
         return (
@@ -50,6 +43,11 @@ export default function HabitsScreen() {
     }
 
     function MountAddHabits() {
+        const buttonsWeekday = weekdays.map((weekday, index) => {
+            return (
+                <ButtonWeekday type="button" enable={enable} key={index} id={index} days={days} onClick={() => SetWeekdays(index)}>{weekday.day}</ButtonWeekday >
+            );
+        });
 
         if (clicked) {
             return (
@@ -77,10 +75,7 @@ export default function HabitsScreen() {
             const newSelected = days.filter(day => day !== index);
             setDays(newSelected);
         }
-        console.log(days);
     }
-
-    console.log(days)
 
     function AddHabits(event) {
         event.preventDefault();
@@ -108,7 +103,6 @@ export default function HabitsScreen() {
             setEnable(true);
         })
     }
-    console.log(myHabits)
 
     function GetListHabits() {
         useEffect(() => {
@@ -117,7 +111,6 @@ export default function HabitsScreen() {
             promise.then((response) => {
                 const { data } = response;
                 setMyHabits(data);
-                console.log(data);
             });
 
             promise.catch(err => {
@@ -131,6 +124,11 @@ export default function HabitsScreen() {
     function MountListHabits() {
 
         const habits = myHabits.map((item, index) => {
+            const buttonsWeekday = weekdays.map((weekday, index) => {
+                return (
+                    <ButtonWeekday type="button" enable={enable} key={index} id={index} days={item.days.map((e) => e)}>{weekday.day}</ButtonWeekday >
+                );
+            });
 
             return (
                 <>
@@ -258,7 +256,7 @@ const Grid = styled.div`
     margin-top: 8px;
     align-items: flex-start;
 `
- const ButtonWeekday = styled.button`
+const ButtonWeekday = styled.button`
         width: 30px;
         height: 30px;
         background: #${props => ((props.days.find((e) => e === props.id)) === undefined) ? "FFFFFF" : "CFCFCF"};
