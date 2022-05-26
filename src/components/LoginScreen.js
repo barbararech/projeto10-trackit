@@ -140,5 +140,6 @@ const LoginForms = styled.form`
     font-family: 'Lexend Deca', sans-serif;
     pointer-events: ${props => props.enable ? 'auto' : 'none'};
     opacity: ${props => props.enable ? '1' : '0.7'};
+    cursor: pointer;
   };
 `

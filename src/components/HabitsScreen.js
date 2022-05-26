@@ -18,11 +18,20 @@ export default function HabitsScreen() {
     const [days, setDays] = useState([]);
     const [myHabits, setMyHabits] = useState([]);
 
+    const weekdays = [{ day: "D" }, { day: "S" }, { day: "T" }, { day: "Q" }, { day: "Q" }, { day: "S" }, { day: "S" }];
+
     const config = {
         headers: {
             "Authorization": `Bearer ${token}`
         }
     }
+    
+    const myHabitsDays = myHabits.map((e)=> e.days);
+    const buttonsWeekday = weekdays.map((weekday, index) => {
+        return (
+            <ButtonWeekday type="button" enable={enable} key={index} id={index} days={days} myHabits={myHabitsDays} onClick={() => SetWeekdays(index)}>{weekday.day}</ButtonWeekday >
+        );
+    });
 
     function MountHabitsTop() {
         return (
@@ -41,7 +50,6 @@ export default function HabitsScreen() {
     }
 
     function MountAddHabits() {
-        const [active, setActive] = useState([]);
 
         if (clicked) {
             return (
@@ -49,14 +57,8 @@ export default function HabitsScreen() {
                     <input type="text" id="name" value={name} placeholder="nome do hábito" required
                         onChange={e => setName(e.target.value)}
                     />
-                    <Grid enable={enable} active={active}>
-                        <button type="button" onClick={() => setDays([...days, 0])}>D</button>
-                        <button type="button" onClick={() => setDays([...days, 1])}>S</button>
-                        <button type="button" onClick={() => setDays([...days, 2])}>T</button>
-                        <button type="button" onClick={() => setDays([...days, 3])}>Q</button>
-                        <button type="button" onClick={() => setDays([...days, 4])}>Q</button>
-                        <button type="button" onClick={() => setDays([...days, 5])}>S</button>
-                        <button type="button" onClick={() => setDays([...days, 6])}>S</button>
+                    <Grid>
+                        {buttonsWeekday}
                     </Grid>
                     <ActionButtons enable={enable}>
                         <button className="cancel" onClick={() => setClicked(false)}>Cancelar</button>
@@ -66,6 +68,18 @@ export default function HabitsScreen() {
             )
         }
     }
+
+    function SetWeekdays(index) {
+        const selected = days.some(day => day === index);
+        if (!selected) {
+            setDays([...days, index]);
+        } else {
+            const newSelected = days.filter(day => day !== index);
+            setDays(newSelected);
+        }
+        console.log(days);
+    }
+
     console.log(days)
 
     function AddHabits(event) {
@@ -115,9 +129,9 @@ export default function HabitsScreen() {
     }
 
     function MountListHabits() {
-        const [active, setActive] = useState([]);
 
         const habits = myHabits.map((item, index) => {
+
             return (
                 <>
                     <HabitContainer>
@@ -125,14 +139,8 @@ export default function HabitsScreen() {
                             <span>{item.name}</span>
                             <ion-icon name="trash-outline"></ion-icon>
                         </HabitHeader>
-                        <Grid active={active}>
-                            <button type="button">D</button>
-                            <button type="button">S</button>
-                            <button type="button">T</button>
-                            <button type="button">Q</button>
-                            <button type="button">Q</button>
-                            <button type="button">S</button>
-                            <button type="button">S</button>
+                        <Grid>
+                            {buttonsWeekday}
                         </Grid>
                     </HabitContainer>
                 </>
@@ -152,13 +160,13 @@ export default function HabitsScreen() {
 
 
     return (
-            <Container>
-                <Header />
-                {MountHabitsTop()}
-                {GetListHabits()}
-                {MountListHabits()}
-                <Menu />
-            </Container>
+        <Container>
+            <Header />
+            {MountHabitsTop()}
+            {GetListHabits()}
+            {MountListHabits()}
+            <Menu />
+        </Container>
     )
 }
 
@@ -249,18 +257,18 @@ const Grid = styled.div`
     align-items: flex-start;
     margin-top: 8px;
     align-items: flex-start;
-
-    button{
+`
+ const ButtonWeekday = styled.button`
         width: 30px;
         height: 30px;
-        background: ${props => props.active ? '#FFFFFF' : '#F2F2F2'};
+        background: #${props => ((props.days.find((e) => e === props.id)) === undefined) ? "FFFFFF" : "CFCFCF"};
         border: 1px solid #D5D5D5;
         border-radius: 5px;
         font-size: 20px;
-        color: #DBDBDB;
+        color: #${props => ((props.days.find((e) => e === props.id)) === undefined) ? "DBDBDB" : "FFFFFF"};
         margin-right: 4px;
+        cursor:pointer;
         pointer-events: ${props => props.enable ? 'auto' : 'none'};
-    };
 `
 
 const ActionButtons = styled.div`
@@ -296,5 +304,6 @@ const HabitHeader = styled.div`
     ion-icon{
         font-size:20px;
         color: #666666;
+        cursor:pointer;
     }
 `

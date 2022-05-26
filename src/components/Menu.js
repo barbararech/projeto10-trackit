@@ -52,6 +52,7 @@ const Container = styled.div`
     bottom:0;
     right:0;
     background-color: #FFFFFF; 
+    z-index:1;
 
     *{
         box-sizing: border-box;
