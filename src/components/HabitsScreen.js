@@ -120,6 +120,39 @@ export default function HabitsScreen() {
         }, []);
 
     }
+    window.onbeforeunload = (event) => {
+        const e = event || window.event;
+        // Cancel the event
+        e.preventDefault();
+        if (e) {
+            e.returnValue = ''; // Legacy method for cross browser support
+        }
+        return ''; // Legacy method for cross browser support
+    };
+
+
+    function DeleteHabit(item, index, e) {
+        let confirmation = window.confirm("Você tem certeza que quer deletar este hábito?")
+        e.preventDefault();
+
+        if (confirmation) {
+            const promise = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${item.id}`, config);
+
+            promise.then((response) => {
+                const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config)
+
+                promise.then((response) => {
+                    const { data } = response;
+                    setMyHabits(data);
+                });
+            });
+
+            promise.catch(err => {
+                // const message = err.response.statusText;
+                alert("Não  foi possível apagar o hábito!");
+            })
+        }
+    }
 
     function MountListHabits() {
 
@@ -135,7 +168,9 @@ export default function HabitsScreen() {
                     <HabitContainer>
                         <HabitHeader>
                             <span>{item.name}</span>
-                            <ion-icon name="trash-outline"></ion-icon>
+                            <button onClick={(e) => DeleteHabit(item, index, e)}>
+                                <ion-icon name="trash-outline"></ion-icon>
+                            </button>
                         </HabitHeader>
                         <Grid>
                             {buttonsWeekday}
@@ -243,10 +278,10 @@ const HabitContainer = styled.form`
         align-items: flex-start;
     }
    
-
     ::placeholder{
         color: ${props => props.enable ? '#DBDBDB' : '#AFAFAF'};
         opacity: 1;
+
 };
 `
 const Grid = styled.div`
@@ -303,5 +338,10 @@ const HabitHeader = styled.div`
         font-size:20px;
         color: #666666;
         cursor:pointer;
+    }
+
+    button{
+        background-color: #FFFFFF;
+        border:none;
     }
 `
