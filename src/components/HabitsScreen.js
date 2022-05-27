@@ -220,9 +220,8 @@ const Container = styled.div`
         color: #666666;
         line-height: 22px;
     }
-
-
 `
+
 const MyHabitsTop = styled.div`
     display: flex;
     flex-direction: row;
