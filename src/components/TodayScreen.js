@@ -23,15 +23,23 @@ export default function TodayScreen() {
 
     const [todayHabits, setTodayHabits] = useState([]);
 
-    const [isChecked, setIsChecked] = useState(false);
     const [idChecked, setIdChecked] = useState([]);
 
     function MountHabitsTop() {
+
+        const subtitle = () => {
+            if(idChecked.length === 0){
+                return(<span>Nenhum hábito concluído ainda</span>)
+            } else{
+                return(<span>67% dos hábitos concluídos </span>)
+            }
+        }
+
         return (
             <>
-                <MyHabitsTop>
+                <MyHabitsTop idChecked={idChecked}>
                     <h2>{nowWeekday.charAt(0).toUpperCase() + nowWeekday.slice(1)}, {now}</h2>
-                    <span>Nenhum hábito concluído ainda</span>
+                    {subtitle()}
                 </MyHabitsTop>
             </>
         )
@@ -44,7 +52,6 @@ export default function TodayScreen() {
             promise.then((response) => {
                 const { data } = response;
                 setTodayHabits(data);
-                console.log("oiiiiiii")
             });
 
             promise.catch(err => {
@@ -57,13 +64,16 @@ export default function TodayScreen() {
 
     function MountTodayHabits() {
         const todayHabit = todayHabits.map((item, index) => {
+            if(item.done === true && idChecked.includes(item.id) === false){
+                setIdChecked([...idChecked, item.id])
+            }
             return (
                 <>
                     <HabitContainer>
-                        <InfoTodayHabits>
+                        <InfoTodayHabits id={item.id} idChecked={idChecked} highestSequence={item.highestSequence} currentSequence={item.currentSequence}  >
                             <h5>{item.name}</h5>
-                            <span>Sequência atual: {item.currentSequence}</span>
-                            <span>Seu recorde: {item.highestSequence}</span>
+                            <span>Sequência atual: <span className="progress">{item.currentSequence} dia(s) </span></span>
+                            <span>Seu recorde: <span className="record">{item.highestSequence} dia(s) </span></span>
                         </InfoTodayHabits>
                         <ButtonCheck type="button" key={item.id} id={item.id} idChecked={idChecked} onClick={(event) => CheckHabit(item.id, event)}>
                             <ion-icon name="checkbox"></ion-icon>
@@ -77,58 +87,67 @@ export default function TodayScreen() {
             return (
                 todayHabit
             );
-        } else {
-            return (
-                <span>Carregando...</span>
-            );
         }
     }
 
     function CheckHabit(id, event) {
+        const body = {
+            id,
+        };
         const checked = idChecked.some(e => e === id);
+
         if (!checked) {
-            console.log(isChecked)
-            setIsChecked(true);
             setIdChecked([...idChecked, id])
-            CheckHabitAPI(id, event);
+            CheckHabitAPI(id, event, body);
         } else {
-            // console.log("ta coisado ja")
-            setIsChecked(false);
             const newChecked = idChecked.filter(e => e !== id);
             setIdChecked(newChecked);
-            // UncheckHabitAPI(id, event);
+            UncheckHabitAPI(id, event, body);
         }
     }
     console.log(idChecked)
 
-    function CheckHabitAPI(id, event) {
+    function CheckHabitAPI(id, event, body) {
         event.preventDefault();
-        console.log(config)
-        console.log(id)
-        console.log(todayHabits)
-        const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, config);
+        
+        const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, body, config);
+        
+        promise.then((response) => {
+            const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
 
-        promise.then(() => {
-            console.log("marcouuuu")
-        })
+            promise.then((response) => {
+                const { data } = response;
+                setTodayHabits(data);
+            });
+        });
 
         promise.catch(err => {
             const message = err.response.statusText;
             alert(message);
-            console.log("NAOOOOO marcouuuu")
         })
     }
 
-    // function UncheckHabitAPI(id, event){
-    //     event.preventDefault();
+    function UncheckHabitAPI(id, event, body){
+        event.preventDefault();
 
-    //     const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, config);
+        const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, body, config);
 
-    //     promise.catch(err => {
-    //         const message = err.response.statusText;
-    //         alert(message);
-    //     })
-    // }
+        promise.then((response) => {
+            const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
+
+            promise.then((response) => {
+                const { data } = response;
+                setTodayHabits(data);
+                const newChecked = idChecked.filter(e => e !== id);
+                setIdChecked(newChecked);
+            });
+        });
+
+        promise.catch(err => {
+            const message = err.response.statusText;
+            alert(message);
+        })
+    }
 
 
     return (
@@ -165,12 +184,13 @@ const MyHabitsTop = styled.div`
         font-family: 'Lexend Deca', sans-serif;
         font-size: 23px;
         color: #126BA5;
+        margin-bottom: 5px;
     }
 
     span{
         font-family: 'Lexend Deca', sans-serif;
         font-size: 18px;
-        color: #BABABA;
+        color: #${props => (props.idChecked.length === 0) ? "BABABA" : "8FC549"};
         line-height: 22px;
     }
 `
@@ -226,6 +246,14 @@ const InfoTodayHabits = styled.div`
         font-size: 13px;
         color: #666666;
         line-height: 16px;
+    }
+
+    .progress{
+        color: #${props => ((props.idChecked.find((e) => e === props.id)) === undefined) ? "666666" : "8FC549 "};
+    }
+
+    .record{
+        color: #${props => (props.highestSequence === props.currentSequence && props.highestSequence !== 0) ? "8FC549" : "666666"};
     }
 `
 

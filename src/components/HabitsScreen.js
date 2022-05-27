@@ -120,6 +120,7 @@ export default function HabitsScreen() {
         }, []);
 
     }
+    
     window.onbeforeunload = (event) => {
         const e = event || window.event;
         // Cancel the event
@@ -148,7 +149,6 @@ export default function HabitsScreen() {
             });
 
             promise.catch(err => {
-                // const message = err.response.statusText;
                 alert("Não  foi possível apagar o hábito!");
             })
         }
