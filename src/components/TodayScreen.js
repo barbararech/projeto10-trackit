@@ -25,13 +25,16 @@ export default function TodayScreen() {
 
     const [idChecked, setIdChecked] = useState([]);
 
+    const percentage = (idChecked.length / todayHabits.length)*100;
+
+
     function MountHabitsTop() {
 
         const subtitle = () => {
             if(idChecked.length === 0){
                 return(<span>Nenhum hábito concluído ainda</span>)
             } else{
-                return(<span>67% dos hábitos concluídos </span>)
+                return(<span>{percentage.toFixed()}% dos hábitos concluídos </span>)
             }
         }
 
@@ -156,7 +159,7 @@ export default function TodayScreen() {
             {MountHabitsTop()}
             {GetListTodayHabits()}
             {MountTodayHabits()}
-            <Menu />
+            <Menu percentage={percentage}/>
         </Container>
     )
 }
