@@ -2,9 +2,13 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import 'react-circular-progressbar/dist/styles.css';
 import { CircularProgressbar,  buildStyles } from 'react-circular-progressbar';
+import { useContext } from "react";
+import UserContext from "../context/UserContext";
 
 
-export default function Footer({percentage}){
+export default function Footer(){
+
+    const { percentage } = useContext(UserContext);
 
     return(
         <Container>
@@ -52,17 +56,12 @@ const Container = styled.div`
     }
 
     button{
-        /* width: 00%; */
-        /* margin-right: 45px;
-        margin-left: 45px; */
         background-color: #FFFFFF;  
         border:none;
         color:#52B6FF;
         font-family: 'Lexend Deca', sans-serif;
         font-size: 20px;
         cursor: pointer;
-        /* padding-left: 30px;
-        padding-right: 30px; */
     }
 
 `
@@ -72,7 +71,6 @@ const ProgressBar = styled.div`
     position: fixed;
     bottom: -40px;
     left:50%;
-    /* margin: 0 auto; */
     font-family: 'Lexend Deca', sans-serif;
     cursor: pointer;
     transform: translate(-50%, -50%);

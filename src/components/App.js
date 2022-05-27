@@ -12,9 +12,10 @@ import HistoryScreen from "./HistoryScreen";
 
 export default function App() {
     const [user, setUser] = useState({});
+    const [percentage, setPercentage] = useState(0);
 
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, percentage, setPercentage }}>
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<LoginScreen />} />

@@ -10,13 +10,14 @@ import Header from "./Header";
 import Menu from "./Menu";
 
 export default function TodayScreen() {
-    const { user } = useContext(UserContext);
+    const { user, percentage, setPercentage } = useContext(UserContext);
     const token = user.token;
     const config = {
         headers: {
             "Authorization": `Bearer ${token}`
         }
     }
+    console.log(percentage)
 
     const now = dayjs().format("DD/MM");
     const nowWeekday = dayjs().locale("pt-br").format("dddd");
@@ -25,7 +26,10 @@ export default function TodayScreen() {
 
     const [idChecked, setIdChecked] = useState([]);
 
-    const percentage = (idChecked.length / todayHabits.length)*100;
+    // const [percentage, setPercentage] = useState("0");
+
+    // setPercentage((idChecked.length / todayHabits.length)*100);
+    // let percentage = (idChecked.length / todayHabits.length)*100;
 
 
     function MountHabitsTop() {
@@ -34,6 +38,7 @@ export default function TodayScreen() {
             if(idChecked.length === 0){
                 return(<span>Nenhum hábito concluído ainda</span>)
             } else{
+                setPercentage((idChecked.length / todayHabits.length)*100);
                 return(<span>{percentage.toFixed()}% dos hábitos concluídos </span>)
             }
         }
@@ -143,6 +148,7 @@ export default function TodayScreen() {
                 setTodayHabits(data);
                 const newChecked = idChecked.filter(e => e !== id);
                 setIdChecked(newChecked);
+
             });
         });
 
