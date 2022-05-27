@@ -6,8 +6,6 @@ export default function Header(){
 
     const { user } = useContext(UserContext);
 
-    console.log(user)
-
     return(
         <Container>
             <h1>TrackIt</h1>

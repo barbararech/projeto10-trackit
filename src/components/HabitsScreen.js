@@ -12,7 +12,7 @@ export default function HabitsScreen() {
     const token = user.token;
 
     const [enable, setEnable] = useState(true);
-    const [clicked, setClicked] = useState(false);
+    const [clickedAddHabit, setClickedAddHabit] = useState(false);
 
     const [name, setName] = useState("");
     const [days, setDays] = useState([]);
@@ -31,7 +31,7 @@ export default function HabitsScreen() {
             <>
                 <MyHabitsTop>
                     <h2>Meus Hábitos</h2>
-                    <button onClick={() => setClicked(true)}>
+                    <button onClick={() => setClickedAddHabit(true)}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z" />
                         </svg>
@@ -49,7 +49,7 @@ export default function HabitsScreen() {
             );
         });
 
-        if (clicked) {
+        if (clickedAddHabit) {
             return (
                 <HabitContainer enable={enable} onSubmit={AddHabits}>
                     <input type="text" id="name" value={name} placeholder="nome do hábito" required
@@ -59,7 +59,7 @@ export default function HabitsScreen() {
                         {buttonsWeekday}
                     </Grid>
                     <ActionButtons enable={enable}>
-                        <button className="cancel" onClick={() => setClicked(false)}>Cancelar</button>
+                        <button className="cancel" onClick={() => setClickedAddHabit(false)}>Cancelar</button>
                         {enable ? <button type="submit">Salvar</button> : <button type="submit"><ThreeDots width={303} height={15} color={"#FFFFFF"} /></button>}
                     </ActionButtons>
                 </HabitContainer>
@@ -92,7 +92,7 @@ export default function HabitsScreen() {
             const { data } = response;
             setName("");
             setDays([]);
-            setClicked(false);
+            setClickedAddHabit(false);
             setEnable(true);
             setMyHabits([...myHabits, data])
         });

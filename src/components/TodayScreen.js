@@ -4,12 +4,13 @@ import styled from "styled-components";
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import locale from "dayjs/locale/pt-br";
 
 import Header from "./Header";
 import Menu from "./Menu";
 
-export default function TodayScreen(){
-    const { user, setUser } = useContext(UserContext);
+export default function TodayScreen() {
+    const { user } = useContext(UserContext);
     const token = user.token;
     const config = {
         headers: {
@@ -19,9 +20,12 @@ export default function TodayScreen(){
 
     const now = dayjs().format("DD/MM");
     const nowWeekday = dayjs().locale("pt-br").format("dddd");
-    
+
     const [todayHabits, setTodayHabits] = useState([]);
-    
+
+    const [isChecked, setIsChecked] = useState(false);
+    const [idChecked, setIdChecked] = useState([]);
+
     function MountHabitsTop() {
         return (
             <>
@@ -52,40 +56,88 @@ export default function TodayScreen(){
     }
 
     function MountTodayHabits() {
-
-           const todayHabit =  todayHabits.map((item, index) => {
-                return (
-                    <>
-                        <HabitContainer>
-                            <InfoTodayHabits>
-                                <h5>{item.name}</h5>
-                                <span>Sequência atual: {item.currentSequence}</span>
-                                <span>Seu recorde: {item.highestSequence}</span>
-                            </InfoTodayHabits>
+        const todayHabit = todayHabits.map((item, index) => {
+            return (
+                <>
+                    <HabitContainer>
+                        <InfoTodayHabits>
+                            <h5>{item.name}</h5>
+                            <span>Sequência atual: {item.currentSequence}</span>
+                            <span>Seu recorde: {item.highestSequence}</span>
+                        </InfoTodayHabits>
+                        <ButtonCheck type="button" key={item.id} id={item.id} idChecked={idChecked} onClick={(event) => CheckHabit(item.id, event)}>
                             <ion-icon name="checkbox"></ion-icon>
-                        </HabitContainer>
-                    </>
-                )
-            });
+                        </ButtonCheck >
+                    </HabitContainer>
+                </>
+            )
+        });
 
-        if(todayHabits.length>0){
-            return(
+        if (todayHabits.length > 0) {
+            return (
                 todayHabit
             );
-        } else{
-            return(
+        } else {
+            return (
                 <span>Carregando...</span>
             );
         }
     }
 
-    return(
+    function CheckHabit(id, event) {
+        const checked = idChecked.some(e => e === id);
+        if (!checked) {
+            console.log(isChecked)
+            setIsChecked(true);
+            setIdChecked([...idChecked, id])
+            CheckHabitAPI(id, event);
+        } else {
+            // console.log("ta coisado ja")
+            setIsChecked(false);
+            const newChecked = idChecked.filter(e => e !== id);
+            setIdChecked(newChecked);
+            // UncheckHabitAPI(id, event);
+        }
+    }
+    console.log(idChecked)
+
+    function CheckHabitAPI(id, event) {
+        event.preventDefault();
+        console.log(config)
+        console.log(id)
+        console.log(todayHabits)
+        const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, config);
+
+        promise.then(() => {
+            console.log("marcouuuu")
+        })
+
+        promise.catch(err => {
+            const message = err.response.statusText;
+            alert(message);
+            console.log("NAOOOOO marcouuuu")
+        })
+    }
+
+    // function UncheckHabitAPI(id, event){
+    //     event.preventDefault();
+
+    //     const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, config);
+
+    //     promise.catch(err => {
+    //         const message = err.response.statusText;
+    //         alert(message);
+    //     })
+    // }
+
+
+    return (
         <Container>
-            <Header/>
+            <Header />
             {MountHabitsTop()}
             {GetListTodayHabits()}
             {MountTodayHabits()}
-            <Menu/>
+            <Menu />
         </Container>
     )
 }
@@ -137,11 +189,18 @@ const HabitContainer = styled.div`
     *{
         box-sizing: border-box;
     }
+`
 
+const ButtonCheck = styled.button`
+
+    border:none;
+    cursor:pointer;
+    background-color: #FFFFFF;
+        
     ion-icon{
         font-size:75px;
-        color: #E7E7E7;
-        margin: -5px;
+        color: #${props => ((props.idChecked.find((e) => e === props.id)) === undefined) ? "E7E7E7" : "8FC549 "};
+        margin: -8px;
     }
 `
 
@@ -169,3 +228,4 @@ const InfoTodayHabits = styled.div`
         line-height: 16px;
     }
 `
+
