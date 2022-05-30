@@ -11,26 +11,18 @@ import Menu from "./Menu";
 
 export default function TodayScreen() {
     const { user, percentage, setPercentage } = useContext(UserContext);
+    const [todayHabits, setTodayHabits] = useState([]);
+    const [idChecked, setIdChecked] = useState([]);
+
     const token = user.token;
     const config = {
         headers: {
             "Authorization": `Bearer ${token}`
         }
     }
-    console.log(percentage)
 
     const now = dayjs().format("DD/MM");
     const nowWeekday = dayjs().locale("pt-br").format("dddd");
-
-    const [todayHabits, setTodayHabits] = useState([]);
-
-    const [idChecked, setIdChecked] = useState([]);
-
-    // const [percentage, setPercentage] = useState("0");
-
-    // setPercentage((idChecked.length / todayHabits.length)*100);
-    // let percentage = (idChecked.length / todayHabits.length)*100;
-
 
     function MountHabitsTop() {
 
@@ -67,7 +59,6 @@ export default function TodayScreen() {
                 alert(message);
             });
         }, []);
-
     }
 
     function MountTodayHabits() {
@@ -77,7 +68,7 @@ export default function TodayScreen() {
             }
             return (
                 <>
-                    <HabitContainer>
+                    <HabitContainer key={index}>
                         <InfoTodayHabits id={item.id} idChecked={idChecked} highestSequence={item.highestSequence} currentSequence={item.currentSequence}  >
                             <h5>{item.name}</h5>
                             <span>Sequência atual: <span className="progress">{item.currentSequence} dia(s) </span></span>
@@ -113,7 +104,6 @@ export default function TodayScreen() {
             UncheckHabitAPI(id, event, body);
         }
     }
-    console.log(idChecked)
 
     function CheckHabitAPI(id, event, body) {
         event.preventDefault();
@@ -258,11 +248,11 @@ const InfoTodayHabits = styled.div`
     }
 
     .progress{
-        color: #${props => ((props.idChecked.find((e) => e === props.id)) === undefined) ? "666666" : "8FC549 "};
+        color: #${props => ((props.idChecked.find((e) => e === props.id)) === undefined) && (props.highestSequence === props.currentSequence) ? "666666" : "8FC549 "};
     }
 
     .record{
-        color: #${props => (props.highestSequence === props.currentSequence && props.highestSequence !== 0) ? "8FC549" : "666666"};
+        color: #${props => ((props.highestSequence === props.currentSequence && props.highestSequence !== 0) && (props.idChecked.find((e) => e === props.id)) !== undefined) ? "8FC549" : "666666"};
     }
 `
 

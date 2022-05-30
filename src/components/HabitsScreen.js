@@ -18,7 +18,7 @@ export default function HabitsScreen() {
     const [days, setDays] = useState([]);
     const [myHabits, setMyHabits] = useState([]);
 
-    const weekdays = [{ day: "D" }, { day: "S" }, { day: "T" }, { day: "Q" }, { day: "Q" }, { day: "S" }, { day: "S" }];
+    const weekdays = [{day: "D"}, {day: "S"}, {day: "T"}, {day: "Q"}, {day: "Q"}, {day: "S"}, {day: "S"}];
 
     const config = {
         headers: {
@@ -120,17 +120,6 @@ export default function HabitsScreen() {
         }, []);
 
     }
-    
-    window.onbeforeunload = (event) => {
-        const e = event || window.event;
-        // Cancel the event
-        e.preventDefault();
-        if (e) {
-            e.returnValue = ''; // Legacy method for cross browser support
-        }
-        return ''; // Legacy method for cross browser support
-    };
-
 
     function DeleteHabit(item, index, e) {
         let confirmation = window.confirm("Você tem certeza que quer deletar este hábito?")
